@@ -49,7 +49,7 @@ public class HomeController {
     @Autowired
     private FriendRequestService friendRequestService;
 
-    //Get mvc
+    //Reading
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/")
     public String index(Model model){
@@ -84,125 +84,6 @@ public class HomeController {
         model.addAttribute("user_id", getCurrentUser().getId());
         return "privacy";
     }
-    // ./get mvc
-
-    @PreAuthorize("isAnonymous()")
-    @PostMapping("/register")
-    public String register(@RequestParam(name = "email") String email,
-                           @RequestParam(name = "password") String password,
-                           @RequestParam(name = "firstName") String firstName,
-                           @RequestParam(name = "lastName") String lastName,
-                           @RequestParam(name = "password2") String password2){
-        if(password.equals(password2)){
-            return "redirect:/login?" + userService.registerUser(firstName, lastName, email, password);
-        }
-        return "redirect:/login?passworderror=true";
-    }
-
-
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping(value = "/addpost")
-    public String addPost(@RequestParam(name = "pic") MultipartFile file,
-                          @RequestParam(name = "title") String title){
-        Post post = new Post();
-        post.setUser(getCurrentUser());
-        post.setDate(new Date());
-        post.setTitle(title);
-        postService.addPost(post);
-        fileUploadService.uploadPostPic(file, post);
-        return "redirect:/?postuploadsuccess=true";
-    }
-
-
-
-//
-//    @PreAuthorize("isAuthenticated()")
-//    @PostMapping("/addpost")
-//    public String addPost(@RequestParam(name = "title") String title){
-//        Date date = new Date();
-//        User user = getCurrentUser();
-//        Post post = new Post();
-//        post.setDate(date);
-//        post.setUser(user);
-//    }
-
-    //Getting current User
-    private User getCurrentUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(!(authentication instanceof AnonymousAuthenticationToken)){
-            User user = (User) authentication.getPrincipal();
-            return user;
-        }
-        return null;
-    }
-
-    //upload picture
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/uploadphoto")
-    public String uploadPhoto(@RequestParam(name = "profile_pic") MultipartFile file){
-        if(file.getContentType().equals("image/jpeg") || file.getContentType().equals("image/png")){
-            fileUploadService.uploadProfilePic(file, getCurrentUser());
-        }
-        return "redirect:/profile";
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/addcomment")
-    public String addComment(@RequestParam(name = "post_id") Long post_id,
-                             @RequestParam(name = "comment") String comment_text){
-        Comment comment = new Comment();
-        comment.setUser(getCurrentUser());
-        comment.setDate(new Date());
-        comment.setComment(comment_text);
-        commentService.addComment(comment, post_id);
-        return "redirect:/postdetails/" + post_id;
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/postdetails/{id}")
-    public String getPostDetails(@PathVariable(name = "id") Long id,
-                                 Model model){
-        User user = getCurrentUser();
-        List<FriendRequestDTO> friendRequestDTOS = friendRequestService.getFriendRequests(user.getId());
-        List<User> friends = userService.getFriends(user.getId());
-        model.addAttribute("friendrequests", friendRequestDTOS);
-        model.addAttribute("friends", friends);
-        model.addAttribute("user_id", user.getId());
-        model.addAttribute("user", user);
-        model.addAttribute("post_id", id);
-        model.addAttribute("comment_count", commentService.countComments(id));
-        return "postdetails";
-    }
-
-    @GetMapping(value = "/profilepics/{url}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody byte[] profilepic(@PathVariable(name = "url") String url) throws IOException {
-
-        String picURL = fileUploadURL + "user.png";
-        if(url != null){
-            picURL = fileUploadURL + url + ".jpg";
-        }
-        InputStream in;
-        try{
-            ClassPathResource resource = new ClassPathResource(picURL);
-            in = resource.getInputStream();
-        }catch (Exception e){
-            picURL = fileUploadURL + "user.png";
-            ClassPathResource resource = new ClassPathResource(picURL);
-            in = resource.getInputStream();
-        }
-
-        return IOUtils.toByteArray(in);
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/deletecomment")
-    public String deleteComment(@RequestParam(name = "comment_id") Long comment_id){
-        Comment comment = commentService.getComment(comment_id);
-        Long post_id = comment.getPost().getId();
-        commentService.deleteComment(comment);
-        return "redirect:/postdetails/" + post_id;
-    }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profiledetails/{id}")
@@ -226,7 +107,122 @@ public class HomeController {
 
     }
 
-    //Update
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/postdetails/{id}")
+    public String getPostDetails(@PathVariable(name = "id") Long id,
+                                 Model model){
+        User user = getCurrentUser();
+        List<FriendRequestDTO> friendRequestDTOS = friendRequestService.getFriendRequests(user.getId());
+        List<User> friends = userService.getFriends(user.getId());
+        model.addAttribute("friendrequests", friendRequestDTOS);
+        model.addAttribute("friends", friends);
+        model.addAttribute("user_id", user.getId());
+        model.addAttribute("user", user);
+        model.addAttribute("post_id", id);
+        model.addAttribute("comment_count", commentService.countComments(id));
+        return "postdetails";
+    }
+
+    //Getting current User
+    private User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication instanceof AnonymousAuthenticationToken)){
+            User user = (User) authentication.getPrincipal();
+            return user;
+        }
+        return null;
+    }
+
+    @GetMapping(value = "/profilepics/{url}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] profilepic(@PathVariable(name = "url") String url) throws IOException {
+
+        String picURL = fileUploadURL + "user.png";
+        if(url != null){
+            picURL = fileUploadURL + url + ".jpg";
+        }
+        InputStream in;
+        try{
+            ClassPathResource resource = new ClassPathResource(picURL);
+            in = resource.getInputStream();
+        }catch (Exception e){
+            picURL = fileUploadURL + "user.png";
+            ClassPathResource resource = new ClassPathResource(picURL);
+            in = resource.getInputStream();
+        }
+
+        return IOUtils.toByteArray(in);
+    }
+    // ./reading
+
+    // Creating
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/register")
+    public String register(@RequestParam(name = "email") String email,
+                           @RequestParam(name = "password") String password,
+                           @RequestParam(name = "firstName") String firstName,
+                           @RequestParam(name = "lastName") String lastName,
+                           @RequestParam(name = "password2") String password2){
+        if(password.equals(password2)){
+            return "redirect:/login?" + userService.registerUser(firstName, lastName, email, password);
+        }
+        return "redirect:/login?passworderror=true";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/sendrequest")
+    public String sendrequest(@RequestParam(name = "id") Long receiver_id){
+        Long sender_id = getCurrentUser().getId();
+        friendRequestService.addFriendRequest(sender_id, receiver_id);
+        return "redirect:/profiledetails/" + receiver_id;
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = "/addpost")
+    public String addPost(@RequestParam(name = "pic") MultipartFile file,
+                          @RequestParam(name = "title") String title){
+        Post post = new Post();
+        post.setUser(getCurrentUser());
+        post.setDate(new Date());
+        post.setTitle(title);
+        postService.addPost(post);
+        fileUploadService.uploadPostPic(file, post);
+        return "redirect:/?postuploadsuccess=true";
+    }
+
+
+
+    //upload picture
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/uploadphoto")
+    public String uploadPhoto(@RequestParam(name = "profile_pic") MultipartFile file){
+        if(file.getContentType().equals("image/jpeg") || file.getContentType().equals("image/png")){
+            fileUploadService.uploadProfilePic(file, getCurrentUser());
+        }
+        return "redirect:/profile";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/addfriend")
+    public String addFriend(@RequestParam(name = "id") Long request_id){
+        friendRequestService.addAsFriend(request_id);
+        return "redirect:/";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/addcomment")
+    public String addComment(@RequestParam(name = "post_id") Long post_id,
+                             @RequestParam(name = "comment") String comment_text){
+        Comment comment = new Comment();
+        comment.setUser(getCurrentUser());
+        comment.setDate(new Date());
+        comment.setComment(comment_text);
+        commentService.addComment(comment, post_id);
+        return "redirect:/postdetails/" + post_id;
+    }
+
+    // ./Creating
+
+    //Updating
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/updatecredentials")
     public String updateCredentials(@RequestParam(name = "firstName") String firstName,
@@ -251,21 +247,9 @@ public class HomeController {
         return "redirect:/profile?passwordchangesuccess=true";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/sendrequest")
-    public String sendrequest(@RequestParam(name = "id") Long receiver_id){
-        Long sender_id = getCurrentUser().getId();
-        friendRequestService.addFriendRequest(sender_id, receiver_id);
-        return "redirect:/profiledetails/" + receiver_id;
-    }
+    // ./updating
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/addfriend")
-    public String addFriend(@RequestParam(name = "id") Long request_id){
-        friendRequestService.addAsFriend(request_id);
-        return "redirect:/";
-    }
-
+    //Deleting
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/declinerequest")
     public String declineRequest(@RequestParam(name = "id") Long request_id){
@@ -295,8 +279,15 @@ public class HomeController {
         return "redirect:/logout";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/deletecomment")
+    public String deleteComment(@RequestParam(name = "comment_id") Long comment_id){
+        Comment comment = commentService.getComment(comment_id);
+        Long post_id = comment.getPost().getId();
+        commentService.deleteComment(comment);
+        return "redirect:/postdetails/" + post_id;
+    }
 
-
-
+    // ./deleting
 
 }
