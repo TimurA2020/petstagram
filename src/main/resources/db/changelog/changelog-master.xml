@@ -83,4 +83,24 @@
                  stripComments="true"/>
     </changeSet>
 
+    <changeSet author="timur" id="0.0.9_insert_default_user_data">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.9_insert_default_user_data.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.1.0_update_passwords_to_encrypted">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.1.0_update_passwords_to_encrypted.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
 </databaseChangeLog>

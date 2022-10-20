@@ -146,13 +146,21 @@ public class UserService implements UserDetailsService {
 
         //Removing friend relationships
         for(int i = 0; i < friends.size(); i++){
-            friends.get(i).removeFriend(currentUser);
+            friendRequestService.deleteFriend(friends.get(i).getId(), currentUser.getId());
         }
 
-        commentService.deleteCommentsByAuthor(user_id);
-        postService.deletePostsByUser(user_id);
-        friendRequestService.deleteRequestAssociatedWithUser(user_id);
-        userRepo.delete(currentUser);
+        friends.clear();
+
+        currentUser.setFriends(friends);
+        userRepo.save(currentUser);
+        try {
+            commentService.deleteCommentsByAuthor(user_id);
+            postService.deletePostsByUser(user_id);
+            friendRequestService.deleteRequestAssociatedWithUser(user_id);
+            userRepo.delete(currentUser);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void updateCredentials(User user, String firstName, String lastName, String status){

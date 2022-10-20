@@ -49,6 +49,7 @@ public class HomeController {
     @Autowired
     private FriendRequestService friendRequestService;
 
+    //Get mvc
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/")
     public String index(Model model){
@@ -77,6 +78,14 @@ public class HomeController {
         return "profile";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping(value = "/privacy")
+    public String privacy(Model model){
+        model.addAttribute("user_id", getCurrentUser().getId());
+        return "privacy";
+    }
+    // ./get mvc
+
     @PreAuthorize("isAnonymous()")
     @PostMapping("/register")
     public String register(@RequestParam(name = "email") String email,
@@ -90,12 +99,7 @@ public class HomeController {
         return "redirect:/login?passworderror=true";
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping(value = "/privacy")
-    public String privacy(Model model){
-        model.addAttribute("user_id", getCurrentUser().getId());
-        return "privacy";
-    }
+
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/addpost")
