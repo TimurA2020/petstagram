@@ -1,0 +1,86 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="timur" id="0.0.1_create_user_and_role_table">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.1_create_user_and_role_table.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.0.2_create_user_roles_table">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.2_create_user_roles_table.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.0.3_add_profile_pic_column">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.3_add_profile_pic_column.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.0.4_add_status_column">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.4_add_status_column.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.0.5_create_posts_table">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.5_create_posts_table.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.0.6_create_comments_table">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.6_create_comments_table.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.0.7_create_friend_requests_table">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.7_create_friend_requests_table.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+    <changeSet author="timur" id="0.0.8_add_user_friends_table">
+        <sqlFile dbms="postgresql"
+                 encoding="utf8"
+                 endDelimiter=";"
+                 path="changes/0.0.8_add_user_friends_table.sql"
+                 relativeToChangelogFile="true"
+                 splitStatements="true"
+                 stripComments="true"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Petstagram</title>
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/css/comments.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+<body onload="loadposts(); loadComments();">
+  <!-- nav -->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Petstagram</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/">Home</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- ./nav -->
+
+  <!-- main -->
+  <main class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- profile brief -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4 th:text="${user.firstName + ' ' + user.lastName}"></h4>
+            <p th:text="${user.status}"></p>
+          </div>
+        </div>
+        <!-- ./profile brief -->
+
+        <!-- friend requests -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>friend requests</h4>
+            <ul>
+              <li th:each="request : ${friendrequests}">
+                <a href="/" style="display: block" th:text="${request.sender.firstName + ' ' + request.sender.lastName}"></a>
+                <form style="margin: 0; padding: 0; display: inline;" action="/addfriend" method="post"><input type="hidden" name="id" th:value="${request.id}"><button class="btn btn-primary btn-sm" type="submit">Accept</button> </form>
+                <form style="margin: 0; padding: 0; display: inline;" action="/declinerequest" method="post"><input type="hidden" name="id" th:value="${request.id}"><button class="btn btn-danger btn-sm" type="submit">Decline</button> </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- ./friend requests -->
+      </div>
+      <div class="col-md-6">
+
+        <!-- feed -->
+        <div>
+          <!-- post -->
+          <div id="posts">
+
+          </div>
+          <!-- ./post -->
+
+<!--          COMMENT SECTION-->
+          <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+          <section class="content-item" id="comments">
+            <div class="container" style="width: 100%;">
+              <div class="row">
+                <div class="col" style="width: 90%; margin-left: 5%;">
+                  <form action="/addcomment" method="post">
+                    <h3 class="pull-left">New Comment</h3>
+                    <button type="submit" class="btn btn-normal pull-right">Submit</button>
+                    <fieldset>
+                      <div class="row">
+                        <div class="col-sm-3 col-lg-2 hidden-xs">
+                          <img class="img-responsive" th:src="${'/profilepics/' + #authentication.getPrincipal().getProfilePic}" alt="">
+                        </div>
+                        <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                          <input type="hidden" th:value='${post_id}' name="post_id">
+                          <textarea class="form-control" id="message" name="comment" placeholder="Your message" required></textarea>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </form>
+
+                  <h3 th:text="${comment_count} + ' comments'"></h3>
+
+                  <div id="allcomments">
+
+                  </div>
+
+
+<!--                  &lt;!&ndash; COMMENT 2 - START &ndash;&gt;-->
+<!--                  <div class="media">-->
+<!--                    <a class="pull-left" href="#"><img class="media-object" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt=""></a>-->
+<!--                    <div class="media-body">-->
+<!--                      <h4 class="media-heading">John Doe</h4>-->
+<!--                      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>-->
+<!--                      <ul class="list-unstyled list-inline media-detail pull-left">-->
+<!--                        <li><i class="fa fa-calendar"></i>27/02/2014</li>-->
+<!--                        <li><i class="fa fa-thumbs-up"></i>13</li>-->
+<!--                      </ul>-->
+<!--                      <ul class="list-unstyled list-inline media-detail pull-right">-->
+<!--                        <li class=""><a href="">Like</a></li>-->
+<!--                        <li class=""><a href="">Reply</a></li>-->
+<!--                      </ul>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; COMMENT 2 - END &ndash;&gt;-->
+
+                </div>
+              </div>
+            </div>
+          </section>
+
+<!--          ./COMMENT SECTION-->
+
+        </div>
+        <!-- ./feed -->
+      </div>
+      <div class="col-md-3">
+
+        <!-- friends -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>Friends</h4>
+            <ul>
+              <li th:each="friend : ${friends}" style="margin-bottom: 5px;">
+                <a th:href="'/profiledetails/' + ${friend.id}" th:text="${friend.firstName + ' ' + friend.lastName}"></a>
+                <form action="/deletefriend" method="post" style="display: inline; margin: 0;"><input type="hidden" name="id" th:value="${friend.id}">
+                  <button class="btn btn-sm btn-danger" style="padding: 2px 4px;" type="submit">Unfriend</button></form>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- ./friends -->
+
+    </div>
+  </main>
+  <!-- ./main -->
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/script.js"></script>
+  <script>
+
+    var url = window.location.pathname;
+    var id = url.substring(url.lastIndexOf('/') + 1);
+
+    var user_id = "[[${user_id}]]";
+
+    function loadposts(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function() {
+        const result = this.responseText;
+        var postsJson = JSON.parse(result);
+        var htmlCode = "";
+
+        //selectors
+        var posts = document.getElementById("posts");
+
+        if (postsJson != null) {
+          htmlCode += "<div class=\"panel panel-default\">\n" +
+                  "            <div class=\"panel-body\">\n" +
+                  "              <p>" + postsJson['title']  +"</p>\n" +
+                  "              <img src='/profilepics/" + postsJson['image'] + "' alt='post-image' style='max-width: 450px'>\n" +
+                  "            </div>\n" +
+                  "            <div class=\"panel-footer\">\n" +
+                  "              <span>" + postsJson['prettyTime'] + " by " + postsJson['user']['firstName'] + " " + postsJson['user']['lastName'] + "</span> \n";
+          if(user_id == postsJson['user']['id']){
+            htmlCode += "<span class=\"pull-right\"><form action='/deletepost' method='post' style='display: inline; margin: 0;'> " +
+                    "<input type='hidden' name='id' value='" + postsJson['id']  + "'>" +
+                    "<button style='padding: 3px 7px;' type='submit' class=\"btn btn-sm btn-danger\">X</button></form></span>\n";
+          }
+
+          htmlCode += "            </div>\n" +
+                    "          </div>"
+        }
+        posts.innerHTML = htmlCode;
+      }
+      xhttp.open("GET", "http://localhost:8082/api/posts/" + id);
+      xhttp.send();
+    }
+
+    function loadComments(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function() {
+        const result = this.responseText;
+        var commentsJson = JSON.parse(result);
+        var htmlCode = "";
+
+        //selectors
+        var comments = document.getElementById("allcomments");
+
+        for(var i = 0; i < commentsJson.length; i++){
+          htmlCode += "<div class=\"media\">\n" +
+                  "                    <a class=\"pull-left\" href=\"#\"><img class=\"media-object\" src='/profilepics/" + commentsJson[i]['user']['profilePic'] + "' alt='profile-pic'></a>\n" +
+                  "                    <div class=\"media-body\">\n" +
+                  "                      <h4 class=\"media-heading\">" + commentsJson[i]['user']['firstName'] + " " + commentsJson[i]['user']['lastName'] + "</h4>\n" +
+                  "                      <p>" + commentsJson[i]['comment']  +  "</p>\n" +
+                  "                      <ul class=\"list-unstyled list-inline media-detail pull-left\">\n" +
+                  "                        <li><i class=\"fa fa-calendar\"></i>" + commentsJson[i]['prettyTime'] + "</li>\n" +
+                  // "                        <li><i class=\"fa fa-thumbs-up\"></i>13</li>\n" +
+                  "                      </ul>\n";
+                                     if (commentsJson[i]["user"]["id"] == user_id) {
+                                       htmlCode += "                      <ul class=\"list-unstyled list-inline media-detail pull-right\">\n" +
+                                       "                        <li class=\"\"><form action='/deletecomment' method='post' style='margin: 0;'><input type='hidden' name='comment_id' value='" + commentsJson[i]['id'] + "'><button class='delete-comment-red' type='submit'>Delete</button></form></li>\n" +
+                                       "                      </ul>\n";
+                                     }
+                  htmlCode += "                    </div>\n" +
+                  "                  </div>";
+        }
+
+        comments.innerHTML = htmlCode;
+      }
+      xhttp.open("GET", "http://localhost:8082/api/comments/" + id);
+      xhttp.send();
+    }
+  </script>
+</body>
+</html>

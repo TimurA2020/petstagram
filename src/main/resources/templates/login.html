@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Petstagram</title>
+
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+<body>
+  <!-- nav -->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Petstagram</a>
+      </div>
+    </div>
+  </nav>
+  <!-- ./nav -->
+
+  <!-- main -->
+  <main class="container">
+  <h1 class="text-center">Welcome to Petstagram! <br><small>Social Network for Pets.</small></h1>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Login to start enjoying unlimited fun!</h4>
+
+        <!-- login form -->
+        <form method="post" action="/login">
+          <div class="form-group">
+            <input class="form-control" type="text" name="user_email" placeholder="Email">
+          </div>
+
+          <div class="form-group">
+            <input class="form-control" type="password" name="user_password" placeholder="Password">
+          </div>
+
+          <div id="alert" class="alert alert-danger" th:if="${(param.error != null) and (param.error[0] == 'true')}" role="alert">
+            Wrong username or password!
+          </div>
+
+          <div class="form-group">
+            <input class="btn btn-primary" type="submit" name="login" value="Login">
+          </div>
+        </form>
+        <!-- ./login form -->
+      </div>
+      <div class="col-md-6">
+        <h4>Don't have an account yet? Register!</h4>
+
+        <!-- register form -->
+        <form method="post" action="/register">
+          <div class="form-group">
+            <input class="form-control" type="text" name="email" placeholder="Email" required>
+          </div>
+            <div class="alert alert-danger mt-2" role="alert" th:if="${(param.usererror != null) and (param.usererror[0] == 'true')}">
+              This user already exists!
+            </div>
+          <div class="form-group">
+            <input class="form-control" type="text" name="firstName" placeholder="Pet's Name" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" name="lastName" placeholder="Owner's Last Name" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="password" name="password2" placeholder="Repeat your password" required>
+          </div>
+              <div class="alert alert-danger mt-2" role="alert" th:if="${(param.passworderror != null) and (param.passworderror[0] == 'true')}">
+                Passwords don't match!
+              </div>
+              <div class="alert alert-success" role="alert" th:if="${(param.success != null) and (param.success[0] == 'true')}">
+                Your registration is complete! Use your credentials to login.
+              </div>
+          <div class="form-group">
+            <input class="btn btn-success" type="submit" name="register" value="Register">
+          </div>
+        </form>
+        <!-- ./register form -->
+      </div>
+    </div>
+  </main>
+  <!-- ./main -->
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <ul class="nav nav-pills pull-right">
+      <li>Petstagram - Made by Timur</li>
+    </ul>
+  </footer>
+  <!-- ./footer -->
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/script.js"></script>
+</body>
+</html>

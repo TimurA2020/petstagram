@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Petstagram</title>
+
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+<body onload="loadposts();">
+  <!-- nav -->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Petstagram</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/">Home</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- ./nav -->
+
+  <!-- main -->
+  <main class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- edit profile -->
+        <div class="panel panel-default">
+          <div  class="panel-body">
+            <h4>Profile information</h4>
+            <form th:if="${showoption == true}" action="/sendrequest" method="post">
+                <input type="hidden" name="id" placeholder="Location" th:value="${user.id}" readonly>
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Add as a friend</button>
+              </div>
+            </form>
+            <div class="form-group" th:if ="${request == true}">
+              <button class="btn" style="background-color: gray" disabled>Request Sent</button>
+            </div>
+            <div class="form-group" th:if ="${isfriend == true}">
+              <button class="btn" style="background-color: gray" disabled>You are already friends</button>
+            </div>
+          </div>
+        </div>
+        <!-- ./edit profile -->
+      </div>
+      <div class="col-md-6">
+        <!-- user profile -->
+        <div class="media">
+          <div class="media-left">
+            <img th:src="'/profilepics/' + ${user.getProfilePic}" class="media-object" style="width: 128px; height: 128px;">
+          </div>
+          <div class="media-body">
+            <h2 class="media-heading" th:text="${user.firstName} + ' ' + ${user.lastName}"></h2>
+            <p th:text="'Status: ' + ${user.status}"></p>
+          </div>
+        </div>
+        <!-- user profile -->
+
+        <hr>
+
+        <!-- timeline -->
+        <div>
+          <!-- post -->
+          <div id="posts">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <p>Hello people! This is my first Petstagram post. Hurray!!!</p>
+              </div>
+              <div class="panel-footer">
+                <span>posted 2017-5-27 20:45:01 by nicholaskajoh</span>
+                <span class="pull-right"><a class="text-danger" href="#">[delete]</a></span>
+              </div>
+            </div>
+          </div>
+          <!-- ./post -->
+        </div>
+        <!-- ./timeline -->
+      </div>
+      <div class="col-md-3">
+        <!-- friends -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>Friends</h4>
+            <ul>
+              <li th:each="friend : ${user.friends}">
+                <a th:href="'/profiledetails/' + ${friend.id}" th:text="${friend.firstName + ' ' + friend.lastName}"></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- ./friends -->
+      </div>
+    </div>
+  </main>
+  <!-- ./main -->
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <ul class="nav nav-pills pull-right">
+      <li>Petstagram - Made by Timur</li>
+    </ul>
+  </footer>
+  <!-- ./footer -->
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
+  <script>
+    const button = document.querySelector('#addTask');
+    const form = document.querySelector('.myForm');
+    const popup = document.querySelector('.popup');
+    const cancel = document.querySelector('.cancel')
+
+    button.addEventListener('click', () => {
+      form.classList.add('open');
+      popup.classList.add('popup_open');
+    });
+
+    cancel.addEventListener('click', () =>{
+      form.classList.remove('open');
+      popup.classList.remove('popup_open');
+    });
+  </script>
+
+  <script>
+    console.log("[[${showoption}]]")
+
+    var url = window.location.pathname;
+    var id = url.substring(url.lastIndexOf('/') + 1);
+
+    function loadposts(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function() {
+        const result = this.responseText;
+        var postsJson = JSON.parse(result);
+        var htmlCode = "";
+
+        //selectors
+        var posts = document.getElementById("posts");
+
+        for(var i = 0; i < postsJson.length; i++) {
+          htmlCode += "<div class=\"panel panel-default\">\n" +
+                  "            <div class=\"panel-body\">\n" +
+                  "              <p>" + postsJson[i]['title']  +"</p>\n" +
+                  "              <img src='/profilepics/" + postsJson[i]['image'] + "' alt='post-image' style='max-width: 450px'>\n" +
+                  "            </div>\n" +
+                  "            <div class=\"panel-footer\">\n" +
+                  "              <span>" + postsJson[i]['prettyTime'] + " by " + postsJson[i]['user']['firstName'] + " " + postsJson[i]['user']['lastName'] + "</span> \n" +
+                  "              <span class=\"pull-right\"><a class=\"text-primary\" href='/postdetails/" + postsJson[i]['id'] + "'>[" + postsJson[i]['commentCount'] + " comments]</a></span>\n" +
+                  "            </div>\n" +
+                  "          </div>"
+        }
+        posts.innerHTML = htmlCode;
+      }
+      xhttp.open("GET", "http://localhost:8082/api/posts/userposts/" + id);
+      xhttp.send();
+    }
+  </script>
+</body>
+</html>

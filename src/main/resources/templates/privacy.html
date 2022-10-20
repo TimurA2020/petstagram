@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Petstagram</title>
+
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+<body>
+  <!-- nav -->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Petstagram</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/">Home</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- ./nav -->
+
+  <!-- main -->
+  <main class="container">
+    <div class="row" style="display: flex; justify-content: center;">
+      <div class="col-md-6">
+        <!-- edit profile -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>Change your password</h4>
+            <form action="/updatepassword" method="post">
+              <div class="form-group">
+                <input class="form-control" type="password" name="oldPassword" placeholder="Enter your old password" required>
+              </div>
+              <div class="form-group">
+                <input class="form-control" type="password" name="newPassword" placeholder="Enter new password" required>
+              </div>
+              <div class="form-group">
+                <input class="form-control" type="password" name="reNewPassword" placeholder="Repeat new password" required>
+              </div>
+              <div class="form-group">
+                <button class="btn btn-success" type="submit">Change Password</button>
+              </div>
+            </form>
+            <div class="form-group">
+              <button class="btn btn-danger" id="addTask">Delete account</button>
+            </div>
+          </div>
+        </div>
+        <!-- ./edit profile -->
+      </div>
+    </div>
+  </main>
+  <!-- ./main -->
+
+  <!--    Modal to reassure deleting account-->
+  <div class="popup">
+    <div class="popup__container">
+      <div class="popup__wrapper">
+        <div class="myForm">
+          <form action="/deleteuser" method="POST">
+            <div class="row mt-3">
+              <div class="col-12">
+                <label>Are you sure you want to delete your account?</label>
+              </div>
+            </div>
+            <div class="row mt-1 mb-2">
+              <input class="form-control" type="hidden" name="id" th:value="${user_id}">
+            </div>
+            <button type="button" class="btn btn-secondary cancel">Close</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--     Modal end-->
+
+  <!-- footer -->
+  <!-- ./footer -->
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/script.js"></script>
+  <script type="text/javascript" src="/js/modal.js"></script>
+</body>
+</html>

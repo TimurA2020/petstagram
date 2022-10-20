@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Petstagram</title>
+
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+<body onload="loadposts();">
+  <!-- nav -->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Petstagram</a>
+      </div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/">Home</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+  <!-- ./nav -->
+
+  <!-- main -->
+  <main class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <!-- profile brief -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4 th:text="${user.firstName + ' ' + user.lastName}"></h4>
+            <p th:text="${user.status}"></p>
+          </div>
+        </div>
+        <!-- ./profile brief -->
+
+        <!-- friend requests -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>friend requests</h4>
+            <ul>
+              <li th:each="request : ${friendrequests}">
+                <a href="/" style="display: block" th:text="${request.sender.firstName + ' ' + request.sender.lastName}"></a>
+                <form style="margin: 0; padding: 0; display: inline;" action="/addfriend" method="post"><input type="hidden" name="id" th:value="${request.id}"><button class="btn btn-primary btn-sm" type="submit">Accept</button> </form>
+                <form style="margin: 0; padding: 0; display: inline;" action="/declinerequest" method="post"><input type="hidden" name="id" th:value="${request.id}"><button class="btn btn-danger btn-sm" type="submit">Decline</button> </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- ./friend requests -->
+      </div>
+      <div class="col-md-6">
+        <!-- post form -->
+        <form method="post" action="/addpost" enctype="multipart/form-data">
+          <div class="input-group">
+            <div style="display: flex; flex-direction: row;">
+              <input class="form-control" type="text" name="title" placeholder="Make a post..." required>
+              <div style="width: 28%;"><input class="form-control" type="file" name="pic"></div>
+            </div>
+            <span class="input-group-btn">
+              <button class="btn btn-success" type="submit" name="post">Post</button>
+            </span>
+          </div>
+        </form><hr>
+        <!-- ./post form -->
+
+        <!-- feed -->
+        <div>
+          <!-- post -->
+          <div id="posts">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <p>Hello people! This is my first Petstagram post. Hurray!!!</p>
+              </div>
+              <div class="panel-footer">
+                <span>posted 2017-5-27 20:45:01 by cutecat</span>
+                <span class="pull-right"><a class="text-danger" href="#">[delete]</a></span>
+              </div>
+            </div>
+<!--            COMMENT SECTION           -->
+<!--            <div class="panel panel-default" style="max-width: 90%; margin-left: 5%;">-->
+<!--              <div class="comment" style="max-width: 75%; margin-left: 20%; margin-right: 15%; margin-top: 5px; margin-bottom: 5px;">-->
+<!--                <form method="post" action="/addcomment" enctype="multipart/form-data">-->
+<!--                  <div class="input-group">-->
+<!--                    <div style="display: flex; flex-direction: row;">-->
+<!--                      <input class="form-control" type="text" name="title" placeholder="Make a post...">-->
+<!--                    </div>-->
+<!--                    <span class="input-group-btn">-->
+<!--                      <button style="visibility: hidden;" class="btn btn-success" type="submit" name="post">Post</button>-->
+<!--                    </span>-->
+<!--                  </div>-->
+<!--                </form>-->
+<!--              </div>-->
+<!--            </div>-->
+          </div>
+          <!-- ./post -->
+        </div>
+        <!-- ./feed -->
+      </div>
+      <div class="col-md-3">
+
+        <!-- friends -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h4>Friends</h4>
+            <ul>
+              <li th:each="friend : ${friends}" style="margin-bottom: 5px;">
+                <a th:href="'/profiledetails/' + ${friend.id}" th:text="${friend.firstName + ' ' + friend.lastName}"></a>
+                <form action="/deletefriend" method="post" style="display: inline; margin: 0;"><input type="hidden" name="id" th:value="${friend.id}">
+                  <button class="btn btn-sm btn-danger" style="padding: 2px 4px;" type="submit">Unfriend</button></form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- ./friends -->
+      </div>
+    </div>
+  </main>
+  <!-- ./main -->
+
+  <!-- footer -->
+  <footer class="container text-center">
+    <ul class="nav nav-pills pull-right">
+      <li>Petstagram - 2022 Copyright</li>
+    </ul>
+  </footer>
+  <!-- ./footer -->
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/js/script.js"></script>
+  <script>
+
+    // var url = window.location.pathname;
+    // var id = url.substring(url.lastIndexOf('/') + 1);
+
+    var user_id = "[[${user_id}]]";
+
+    function loadposts(){
+      const xhttp = new XMLHttpRequest();
+      xhttp.onload = function() {
+        const result = this.responseText;
+        var postsJson = JSON.parse(result);
+        var htmlCode = "";
+
+        //selectors
+        var posts = document.getElementById("posts");
+
+        for(var i = 0; i < postsJson.length; i++) {
+          htmlCode += "<div class=\"panel panel-default\">\n" +
+                  "            <div class=\"panel-body\">\n" +
+                  "              <p>" + postsJson[i]['title']  +"</p>\n" +
+                  "              <img src='/profilepics/" + postsJson[i]['image'] + "' alt='post-image' style='max-width: 450px'>\n" +
+                  "            </div>\n" +
+                  "            <div class=\"panel-footer\">\n" +
+                  "              <span>" + postsJson[i]['prettyTime'] + " by <a href = '/profiledetails/" + postsJson[i]['user']['id'] +  "'>" + postsJson[i]['user']['firstName'] + " " + postsJson[i]['user']['lastName'] + "</a></span> \n" +
+                  "              <span class=\"pull-right\"><a class=\"text-primary\" href='/postdetails/" + postsJson[i]['id'] + "'>[" + postsJson[i]['commentCount'] + " comments]</a></span>\n" +
+                  "            </div>\n" +
+                  "          </div>"
+        }
+        posts.innerHTML = htmlCode;
+      }
+      xhttp.open("GET", "http://localhost:8082/api/posts/");
+      xhttp.send();
+    }
+  </script>
+</body>
+</html>
