@@ -1,14 +1,11 @@
 package com.main.petstagram.services;
 
-import com.main.petstagram.dtos.PostDTO;
 import com.main.petstagram.dtos.UserDTO;
-import com.main.petstagram.entities.Post;
 import com.main.petstagram.entities.Role;
 import com.main.petstagram.entities.User;
 import com.main.petstagram.mappers.UserMapper;
 import com.main.petstagram.repos.CommentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +17,6 @@ import com.main.petstagram.repos.UserRepo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {

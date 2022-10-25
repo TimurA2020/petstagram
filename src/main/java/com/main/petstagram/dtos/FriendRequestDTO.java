@@ -1,6 +1,5 @@
 package com.main.petstagram.dtos;
 
-import com.main.petstagram.entities.User;
 import lombok.Getter;
 import lombok.Setter;
 

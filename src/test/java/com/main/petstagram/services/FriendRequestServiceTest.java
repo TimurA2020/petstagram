@@ -72,7 +72,7 @@ class FriendRequestServiceTest {
     }
 
     @Test
-    void checkdeleteRequestAssociatedWithUser(){
+    void checkDeleteRequestAssociatedWithUser(){
         userService.registerUser("test", "user", "sender@gmail.com", "testuser");
         userService.registerUser("test", "user", "receiver@gmail.com", "testuser");
 

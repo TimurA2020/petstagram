@@ -1,8 +1,6 @@
 package com.main.petstagram.api;
 
-import com.main.petstagram.dtos.FriendRequestDTO;
 import com.main.petstagram.dtos.UserDTO;
-import com.main.petstagram.entities.User;
 import com.main.petstagram.repos.UserRepo;
 import com.main.petstagram.services.FriendRequestService;
 import com.main.petstagram.services.UserService;

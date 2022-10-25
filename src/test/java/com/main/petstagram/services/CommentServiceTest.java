@@ -1,17 +1,15 @@
 package com.main.petstagram.services;
 
-import com.main.petstagram.dtos.CommentDTO;
+
 import com.main.petstagram.entities.Comment;
 import com.main.petstagram.entities.Post;
 import com.main.petstagram.entities.User;
-import com.main.petstagram.repos.CommentRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Date;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;

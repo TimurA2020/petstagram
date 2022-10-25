@@ -1,6 +1,5 @@
 package com.main.petstagram.dtos;
 
-import com.ocpsoft.pretty.time.PrettyTime;
 import lombok.Getter;
 import lombok.Setter;
 
